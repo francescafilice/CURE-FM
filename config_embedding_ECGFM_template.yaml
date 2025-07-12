@@ -1,0 +1,99 @@
+# General configuration
+dataset_type: "code15"  # Dataset type
+model_type: "ECG-FM"    # Options: "ECG-FM", "HuBERT-ECG-small", "HuBERT-ECG-base", "HuBERT-ECG-large"
+raw_data_path: "/path/to/raw/data"  # Path to raw data
+processed_data_dir: "/path/to/processed/data"  # Directory for processed data
+
+# Output paths
+ecg_dataset_path: "/path/to/ecg_org_dataset.pkl"  # Path for processed ECG dataset
+meta_dataset_path: "/path/to/meta_dataset.csv"    # Path for metadata
+embeddings_dir: "/path/to/embeddings"  # Directory for embeddings
+
+# Phase control
+preprocess_dataset: false  # Enable dataset preprocessing
+extract_embeddings: false  # Enable embedding extraction
+run_classification: false   # Enable classification
+
+# Preprocessing parameters
+preprocessing_params:
+  num_parts: 18  # Number of parts for processing
+  labels: ["normal_ecg", "1dAVb", "RBBB", "LBBB", "SB", "ST", "AF"]  # Labels to consider
+  metadata: ["exam_id", "age", "is_male"]  # Fields to treat as metadata
+
+# Embedding parameters
+ckpt_path: "/path/to/pretrained/model.pt"  # Path to model checkpoint
+embedding_params:
+  batch_size: 64  # Batch size for embedding extraction
+pool_methods: ["max", "lst"]  # Pooling methods to use
+
+# Classification output directory
+classification_output_dir: "/path/to/classification/output"
+
+# Data sampling parameters
+data_sampler_params:
+  embedding_paths:  # Paths to embedding files for each pooling method
+    max: "/path/to/max_pooled.csv"
+    lst: "/path/to/lst_pooled.csv"
+  label_path: "/path/to/meta_dataset.csv"  # Path to labels file
+  target_labels: ["normal_ecg", "1dAVb", "RBBB", "LBBB", "SB", "ST", "AF"]  # Target labels for classification
+  id_column: "exam_id"  # ID column
+  sample_percentage: 0.20  # Percentage of data to use (0.10, 0.20, 0.99 etc.)
+  balanced_sampling: true  # Balanced sampling across classes
+  balanced_folds: true  # Balanced folds for cross-validation
+  test_size: 0.2  # Fraction of data for testing
+  validation_size: 0.1  # Fraction of data for validation
+  n_folds: 2  # Number of folds for cross-validation (2, 5)
+  random_seed: 42  # Seed for reproducibility
+
+# Classification parameters
+classification_params:
+  classifiers:
+    - type: "nn"  # Neural Network classifier
+      enabled: true  # Enable this classifier
+      extract_shap: false  # Extract SHAP values
+      extract_umap: false  # Extract UMAP visualization
+      hyperparameters:
+        hidden_layers: [1, 2, 3]  # Number of hidden layers
+        hidden_units: [64, 128, 256, 512]  # Units per layer
+        learning_rates: [0.0001, 0.001, 0.01]  # Learning rates
+        activations: ["relu", "tanh"]  # Activation functions
+        # Specific training parameters
+        epochs: 100  # Number of epochs
+        val_split: 0.2  # Validation split fraction
+        batch_size: 64  # Batch size for training
+
+    - type: "xgboost"  # XGBoost classifier
+      enabled: true
+      extract_shap: false
+      extract_umap: false
+      hyperparameters:
+        n_estimators: [100, 200, 300, 400]  # Number of estimators
+        max_depth: [3, 6, 8, 10, 12]  # Maximum depth
+        learning_rate: [0.01, 0.1, 0.3]  # Learning rate
+        subsample: [0.8]  # Subsample fraction
+        colsample_bytree: [0.8]  # Column fraction per tree
+        min_child_weight: [1, 3]  # Minimum child weight
+   
+    - type: "random_forest"  # Random Forest classifier
+      enabled: true
+      extract_shap: false
+      extract_umap: false
+      hyperparameters:
+        n_estimators: [100, 200, 300]  # Number of estimators
+        max_depth: [10, 20, 30, 40, 50]  # Maximum depth
+        min_samples_split: [2, 5, 10]  # Minimum samples for split
+    
+    - type: "svm"  # Support Vector Machine classifier
+      enabled: false  # Usually disabled since it's slower
+      extract_shap: false
+      extract_umap: false
+      hyperparameters:
+        C: [0.1, 1.0, 10.0]  # Regularization parameter
+        kernel: ["linear", "rbf"]  # Kernel
+        gamma: ["scale", "auto"]  # Gamma coefficient
+  
+  # Evaluation metrics
+  evaluation_metrics: ["accuracy", "precision", "recall", "f1_score", "auroc", "auprc"]
+  
+  # Number of features to select with SHAP (optional)
+  shap_num_features: 50

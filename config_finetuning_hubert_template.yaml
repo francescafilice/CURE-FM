@@ -1,0 +1,78 @@
+# General configuration
+dataset_type: "dataset_name"  # Dataset type (e.g., "code15")
+model_type: "model_name"    # Model type (e.g., "hubert-ecg", "ECG-FM")
+raw_data_path: "/path/to/raw_data"  # Path to raw data
+processed_data_dir: "/path/to/processed_data"  # Directory for processed data
+
+# Output paths
+ecg_dataset_path: "/path/to/processed_data/ecg_org_dataset.pkl"  # Path for processed ECG dataset
+meta_dataset_path: "/path/to/processed_data/meta_dataset.csv"  # Path for metadata
+
+# Phase control
+preprocess_dataset: false  # Enable preprocessing
+finetune: true  # Enable finetuning
+
+# Preprocessing parameters
+preprocessing_params:
+  num_parts: 18  # Number of parts for processing
+  labels: ["normal_ecg", "1dAVb", "RBBB", "LBBB", "SB", "ST", "AF"]  # Labels to consider
+  metadata: ["exam_id", "age", "is_male"]  # Fields to treat as metadata
+
+# Pretrained model parameters
+ckpt_path: "/path/to/checkpoints/model_name/model_checkpoint.pt"  # Path to model checkpoint file
+
+# Output directory for metrics and logs
+finetuning_output_dir: "/path/to/output_finetuning_results"
+
+# Data sampling parameters
+data_sampler_params:
+  ecg_path: "/path/to/processed_data/ecg_org_dataset.pkl"  # Path to ECG dataset
+  label_path: "/path/to/processed_data/meta_dataset.csv"  # Path to labels file
+  target_labels: ["normal_ecg"]  # Target labels for finetuning
+  id_column: "exam_id"  # ID column
+  sample_percentage: 0.2  # Percentage of data to use
+  balanced_sampling: true  # Balanced sampling across classes
+  balanced_folds: true  # Balanced folds for cross-validation
+  test_size: 0.2  # Fraction of data for testing
+  validation_size: 0.1  # Fraction of data for validation
+  random_seed: 42  # Seed for reproducibility
+
+# Finetuning parameters
+finetuning_params:
+  batch_size: 64  # Batch size for training
+  epochs: 60  # Number of training epochs
+  learning_rate: 0.0000001  # Learning rate
+  device: "cuda"  # Training device (cuda/cpu)
+  save_dir: "/path/to/saved_models"  # Directory to save model checkpoints
+  patience: 4  # Patience for early stopping
+  
+  # Adam Optimizer parameters
+  beta1: 0.9  # Beta1 parameter for Adam
+  beta2: 0.98  # Beta2 parameter for Adam
+  weight_decay: 0.001  # Weight decay for regularization
+  accumulation_steps: 1  # Gradient accumulation steps
+
+  # Dataloader optimization parameters
+  num_workers: 4  # Number of worker processes for data loading
+  pin_memory: true  # Accelerates transfer to GPU
+  prefetch_factor: 2  # How many batches to prefetch in memory
+
+  # Training optimization parameters
+  model_type: "model_variant"  # Model variant (e.g., "HuBERT-ECG-large")
+  transformer_blocks_to_unfreeze: 16  # How many transformer blocks to unfreeze (0=none)
+  unfreeze_conv_embedder: false  # Whether to unfreeze convolutional embedder layers
+  layer_wise_lr: true  # Differentiated learning per layer
+  classifier_hidden_size: null  # Classifier hidden layer size (null=use default)
+  use_label_embedding: false  # Whether to use label embeddings
+  weight_decay_mult: 1  # Multiplier for weight decay
+  model_dropout_mult: 0  # Multiplier for model dropout
+  finetuning_layerdrop: 0.1  # Layerdrop probability during finetuning
+  downsampling_factor: null  # Downsampling factor for data (null=none)
+  random_crop: false  # Whether to apply random cropping during training
+  dynamic_reg: false  # Dynamic regularization during training
+  use_loss_weights: false  # Weights to balance classes in loss
+  ramp_up_perc: 0.08  # Warmup percentage for scheduler
+  target_metric: "auroc"  # Target metric for early stopping/optimization
+  
+  # Optional parameters for advanced configurations
+  use_mixed_precision: true  # Enable/disable mixed precision training

@@ -1,0 +1,82 @@
+# General configuration
+dataset_type: "dataset_name"  # Dataset type (e.g., "code15")
+model_type: "model_name"  # Model type (e.g., "ECG-FM")
+raw_data_path: "/path/to/raw_data"  # Path to raw data
+processed_data_dir: "/path/to/processed_data"  # Directory for processed data
+
+# Output paths (for preprocessing) and input paths (for finetuning)
+ecg_dataset_path: "/path/to/processed_data/ecg_org_dataset.pkl"  # Path for processed ECG dataset
+meta_dataset_path: "/path/to/processed_data/meta_dataset.csv"  # Path for metadata
+
+# Phase control
+preprocess_dataset: false  # Enable preprocessing
+finetune: true  # Enable finetuning
+
+# Preprocessing parameters
+preprocessing_params:
+  num_parts: 10  # Number of parts for processing (set to 18 for full dataset)
+  labels: ["normal_ecg", "1dAVb", "RBBB", "LBBB", "SB", "ST", "AF"]  # Labels to consider
+
+# Pretrained model parameters
+ckpt_path: "/path/to/checkpoints/model_checkpoint.pt"  # Path to model checkpoint file
+
+# Output directory for metrics and logs
+finetuning_output_dir: "/path/to/output_finetuning_results"
+
+# Data sampling parameters
+data_sampler_params:
+  ecg_path: "/path/to/processed_data/ecg_org_dataset.pkl"  # Path to ECG dataset
+  label_path: "/path/to/processed_data/meta_dataset.csv"  # Path to labels file
+  target_labels: ["normal_ecg"]  # Target labels for finetuning
+  id_column: "exam_id"  # ID column
+  sample_percentage: 0.2  # Percentage of data to use
+  balanced_sampling: true  # Balanced sampling across classes
+  balanced_folds: true  # Balanced folds for cross-validation
+  test_size: 0.2  # Fraction of data for testing
+  validation_size: 0.1  # Fraction of data for validation
+  #n_folds: 1  # Number of folds for cross-validation
+  random_seed: 42  # Seed for reproducibility
+
+# Finetuning parameters
+finetuning_params:
+  batch_size: 128  # Batch size for training
+  epochs: 60  # Number of training epochs
+  learning_rate: 0.0000001  # Learning rate
+  device: "cuda"  # Training device (cuda/cpu)
+  save_dir: "/path/to/saved_models"  # Directory to save model checkpoints
+  patience: 4  # Patience for early stopping
+
+  # Dataloader optimization parameters
+  num_workers: 4  # Number of worker processes for data loading
+  pin_memory: true  # Accelerates transfer to GPU
+  prefetch_factor: 2  # How many batches to prefetch in memory
+
+  # Trainable layer control parameters
+  transformer_blocks_to_unfreeze: 3  # Number of transformer blocks to make trainable (from the end)
+  unfreeze_conv_embedder: true  # Whether to make the convolutional feature extractor trainable
+  layer_wise_lr: true  # Use differentiated learning rates per layer
+  
+  # Optimization and regularization parameters
+  weight_decay_mult: 0.1  # Multiplier for standard weight decay (0.01)
+  model_dropout_mult: 1  # Multiplier for dropout (0.1 base + factor * mult)
+  dynamic_reg: true  # Dynamic adjustment of regularization during training
+  
+  # Data preprocessing parameters
+  downsampling_factor: null  # Downsampling factor for ECGs (null = no downsampling)
+  random_crop: true  # Whether to apply random cropping during training for data augmentation
+  
+  # Loss function and metrics parameters
+  use_loss_weights: true  # Use weights to balance classes in loss function
+  target_metric: "auroc"  # Target metric for early stopping (auroc, f1, accuracy, precision, recall)
+  
+  # Learning rate scheduling and optimization parameters
+  ramp_up_perc: 0.08  # Initial percentage for learning rate warmup
+  accumulation_steps: 2  # Steps for gradient accumulation
+  
+  # Optimizer parameters
+  beta1: 0.9  # Beta1 for AdamW
+  beta2: 0.98  # Beta2 for AdamW
+  weight_decay: 0.001  # Base weight decay for AdamW
+  
+  # Mixed precision and multi-GPU parameters
+  use_mixed_precision: true  # Enable mixed precision to speed up training
