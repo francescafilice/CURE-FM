@@ -3,9 +3,9 @@
 CURE-FM is a comprehensive framework for downstream tasks through foundation model embeddings and lightweight ML classifiers. The framework is designed to support various datasets and models with a modular and easily extensible architecture.
 This repository contains the codebase for CURE-FM, currently applied for **electrocardiogram (ECG) classification**.
 
-## Key Features ✨
+## Key Features 🔧
 
-### 1. ECG Data Preprocessing 🔧
+### 1. ECG Data Preprocessing 
 
 The framework can be decomposed into three main phases: **dataset preprocessing**, **embedding extraction**, **classification**. CUREFM currently supports preprocessing over the [CODE-15](https://zenodo.org/records/4916206) dataset both for the [ECG-FM](https://arxiv.org/abs/2408.05178) and [HuBERT-ECG](https://www.medrxiv.org/content/10.1101/2024.11.14.24317328v1) foundation models. The process includes:
 
@@ -15,7 +15,7 @@ The framework can be decomposed into three main phases: **dataset preprocessing*
 - Management of classification labels (support for multiple labels)
 - Creation of structured datasets
 
-### 2. Embedding Extraction 🧬
+### 2. Embedding Extraction 
 
 After preprocessing, the framework can **extract embeddings using foundation models**:
 
@@ -24,14 +24,14 @@ After preprocessing, the framework can **extract embeddings using foundation mod
 - Generation of various aggregated representations (pooling)
 - Support for multiple pooling methods (average, maximum, minimum, last)
 
-### 3. Classification 📊
+### 3. Classification 
 
 Once the embeddings have been extracted, they are given as input to the specified classifiers in order to perform both **binary** and **multiclass classification** tasks:
 
 - the target labels are entirely customizable
 - optimized training times given the compact size of the input embeddings
 
-### 4. Flexible Configuration ⚙️
+### 4. Flexible Configuration ⚙
 
 The system uses a configuration-based approach that allows:
 
@@ -55,7 +55,7 @@ General and mandatory requirements:
 
 ## How to Use the Framework 🚀
 
-### 1. Creating the Configuration File 📝
+### 1. Creating the Configuration File 
 
 The configuration file is essential in order to quickly modify the parameters you want to test your pipeline on. It is a YAML file which must present the following main components:
 
@@ -123,11 +123,11 @@ classification_params:
 
 **Note 2**: if you want to test either ECG-FM or HuBERT-ECG as embedding extractors, a series of template configuration files are provided in the `root/` folder.
 
-### 2. FM checkpoints 💾
+### 2. FM checkpoints 
 
 Select your FM chepckpoint file and put it under the `root/checkpoints/` folder.
 
-### 3. Running the Framework ▶️
+### 3. Running the Framework ▶
 
 Specify a custom configuration file, place it under `root/` and run the `main_embedding.py` like this:
 
@@ -135,7 +135,7 @@ Specify a custom configuration file, place it under `root/` and run the `main_em
 python main_embedding.py --config path/to/configuration.yaml
 ```
 
-### 4. Output 📁
+### 4. Output 
 
 After execution, the framework will generate:
 
@@ -145,23 +145,23 @@ After execution, the framework will generate:
 
 You can specify the directories where to save these output files in the `config.yaml` file.
 
-## Add a new dataset/FM/classifier 🔧
+## Add a new dataset/FM/classifier 📊
 
-### What you have to do 📋
+### What you have to do 
 
 CUREFM was puposedly developed to be easily extensible and flexible. Depending on your own needs, here is what you have to do in order to employ the framework with a custom dataset, foundation model or classifier.
 
-#### To support a new dataset: 📊
+#### To support a new dataset: 
 1. Create a new preprocessor class that extends `BasePreprocessor`
 2. Implement the abstract methods assuring that the dataset is preprocessed according to the requirements of the foundation model you selected as embedding extractor
 3. Update `ProcessorFactory` to support the new dataset
 
-#### To support a new foundation model: 🤖
+#### To support a new foundation model: 
 1. Create a new extractor class that extends `BaseEmbedder`
 2. Implement the abstract methods
 3. Update `EmbedderFactory` to support the new model
 
-#### To support a new classifier: 🎯
+#### To support a new classifier: 
 1. Create a new extractor class that extends `BaseClassifier`
 2. Implement the abstract methods
 3. Update `ClassifierFactory` to support the new classifier
