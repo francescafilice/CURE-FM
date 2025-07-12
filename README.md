@@ -41,8 +41,6 @@ The system uses a configuration-based approach that allows:
 - Separate configuration for preprocessing and embedding extraction
 
 ## System Requirements 💻
-
-General and mandatory requirements:
 - Python 3.9
 - PyTorch
 - SciPy
