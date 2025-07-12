@@ -31,7 +31,7 @@ Once the embeddings have been extracted, they are given as input to the specifie
 - the target labels are entirely customizable
 - optimized training times given the compact size of the input embeddings
 
-### 4. Flexible Configuration ⚙
+### 4. Flexible Configuration 
 
 The system uses a configuration-based approach that allows:
 
